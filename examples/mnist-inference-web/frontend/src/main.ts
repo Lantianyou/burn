@@ -34,8 +34,8 @@ let timeoutId: number = null!;
 let isDrawing = false;
 let isTimeOutSet = false;
 
-wasm().then(() => {
-	const mnist = new Mnist();
+wasm().then((module) => {
+  const model = new Mnist();
 
 	function fireOffInference() {
 		clearTimeout(timeoutId);
@@ -46,8 +46,11 @@ wasm().then(() => {
 				mainContext,
 				cropContext,
 				scaledContext,
-			);
-			const output = mnist.inference(data);
+      );
+      const length = data.length;
+      // const sharedArray = new SharedArrayBuffer(length);
+      // console.log(data)
+			const output = model.inference(data);
 			// @ts-ignore
 			chart.data.datasets[0].data = output;
 			chart.update();
