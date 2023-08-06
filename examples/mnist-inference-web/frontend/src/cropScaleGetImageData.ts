@@ -20,10 +20,9 @@ function rgba2gray(data: Uint8ClampedArray) {
 
 /**
  * Auto crops a canvas images and returns its image data.
- * @param {object} ctx - canvas 2d context.
  * src: https://stackoverflow.com/a/22267731
  */
-export function cropImageFromCanvas(
+function cropImageFromCanvas(
 	ctx: CanvasRenderingContext2D,
 ): [number, number, ImageData] {
 	const canvas = ctx.canvas;
@@ -32,9 +31,9 @@ export function cropImageFromCanvas(
 	for (let y = 0; y < canvas.height; y++) {
 		for (let x = 0; x < canvas.width; x++) {
 			const index = (y * canvas.width + x) * 4;
-			let r = imageData.data[index];
-			let g = imageData.data[index + 1];
-			let b = imageData.data[index + 2];
+			const r = imageData.data[index];
+			const g = imageData.data[index + 1];
+			const b = imageData.data[index + 2];
 			if (Math.min(r, g, b) !== 255) {
 				pix.x.push(x);
 				pix.y.push(y);
