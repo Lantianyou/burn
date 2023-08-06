@@ -61,7 +61,6 @@ const white = "rgba(255, 255, 255, 255)"
  */
 export function cropScaleGetImageData(
 	mainContext: fabric.Canvas,
-	cropContext: CanvasRenderingContext2D,
 	scaledContext: CanvasRenderingContext2D,
 	cropCanvas: fabric.Canvas,
 ) {
@@ -74,7 +73,7 @@ export function cropScaleGetImageData(
 	cropEl.height = Math.max(w, h) * 1.2
 	const leftPadding = (cropEl.width - w) / 2
 	const topPadding = (cropEl.height - h) / 2
-	cropContext.putImageData(croppedImage, leftPadding, topPadding)
+	cropCanvas.getContext().putImageData(croppedImage, leftPadding, topPadding)
 
 	// Copy image data to scale 28x28 canvas
 	scaledContext.save()

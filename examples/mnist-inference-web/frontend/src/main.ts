@@ -14,11 +14,9 @@ import { fabric } from "fabric"
 import { chartConfigBuilder } from "./chartConfigBuilder.js"
 import { cropScaleGetImageData } from "./cropScaleGetImageData.js"
 
-const cropEl = document.getElementById("crop-canvas") as HTMLCanvasElement
 const scaledCanvasEl = document.getElementById(
 	"scaled-canvas",
 ) as HTMLCanvasElement
-const cropContext = cropEl.getContext("2d", { willReadFrequently: true })!
 const scaledContext = scaledCanvasEl.getContext("2d", {
 	willReadFrequently: true,
 })!
@@ -45,7 +43,6 @@ wasm().then(async () => {
 			// fabricCanvas.freeDrawingBrush._finalizeAndAddPath()
 			const data = cropScaleGetImageData(
 				fabricCanvas,
-				cropContext,
 				scaledContext,
 				cropCanvas
 			)
