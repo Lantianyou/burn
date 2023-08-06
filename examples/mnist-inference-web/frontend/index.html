@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Burn MNIST Inference Web Demo</title>
+</head>
+
+<body>
+      <h1>Burn MNIST Inference Demo</h1>
+
+    <table>
+      <tr>
+        <th>Draw a digit here</th>
+        <th>Cropped and scaled</th>
+        <th>Probability result</th>
+      </tr>
+      <tr>
+        <td>
+          <canvas id="main-canvas" width="300" height="300" style="border: 1px solid #aaa"></canvas>
+        </td>
+        <td>
+          <canvas
+            id="scaled-canvas"
+            width="28"
+            height="28"
+            style="border: 1px solid #aaa; width: 100px; height: 100px"
+          ></canvas>
+          <canvas id="crop-canvas" width="28" height="28" style="display: none"></canvas>
+        </td>
+        <td>
+          <canvas id="chart" style="border: 1px solid #aaa; width: 600px; height: 300px"></canvas>
+        </td>
+      </tr>
+      <tr>
+        <td><button id="clear">Clear</button></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
