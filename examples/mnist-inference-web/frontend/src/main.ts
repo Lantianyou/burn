@@ -8,92 +8,91 @@
  *
  */
 
-import "./style.css";
-import wasm, { Mnist } from "../pkg/mnist_inference_web.js";
-// @ts-ignore
-import { fabric } from "fabric";
-import { chartConfigBuilder } from "./chartConfigBuilder.js";
-import { cropScaleGetImageData } from "./cropScaleGetImageData.js";
+import "./style.css"
+import wasm, { Mnist } from "../pkg/mnist_inference_web.js"
+import { fabric } from "fabric"
+import { chartConfigBuilder } from "./chartConfigBuilder.js"
+import { cropScaleGetImageData } from "./cropScaleGetImageData.js"
 
-const mainCanvasEl = document.getElementById(
-	"main-canvas",
-) as HTMLCanvasElement;
-const cropEl = document.getElementById("crop-canvas") as HTMLCanvasElement;
+const mainCanvasEl = document.getElementById("main-canvas") as HTMLCanvasElement
+const cropEl = document.getElementById("crop-canvas") as HTMLCanvasElement
 const scaledCanvasEl = document.getElementById(
 	"scaled-canvas",
-) as HTMLCanvasElement;
+) as HTMLCanvasElement
 const mainContext = mainCanvasEl.getContext("2d", {
 	willReadFrequently: true,
-})!;
-const cropContext = cropEl.getContext("2d", { willReadFrequently: true })!;
+})!
+const cropContext = cropEl.getContext("2d", { willReadFrequently: true })!
 const scaledContext = scaledCanvasEl.getContext("2d", {
 	willReadFrequently: true,
-})!;
+})!
 
-let timeoutId: number = null!;
-let isDrawing = false;
-let isTimeOutSet = false;
+const cropCanvas = new fabric.Canvas("crop-canvas")
+const scaledCanvas = new fabric.Canvas("scaled-canvas")
 
-wasm().then((module) => {
-  const model = new Mnist();
+// add drawing canvas
+const fabricCanvas = new fabric.Canvas("main-canvas", {
+	isDrawingMode: true,
+	fill: "white",
+})
+fabricCanvas.freeDrawingBrush.width = 25
+
+let timeoutId: number = null!
+let isDrawing = false
+let isTimeOutSet = false
+
+wasm().then(async () => {
+	const model = new Mnist()
 
 	function fireOffInference() {
-		clearTimeout(timeoutId);
+		clearTimeout(timeoutId)
 		timeoutId = setTimeout(() => {
-			isTimeOutSet = true;
-			fabricCanvas.freeDrawingBrush._finalizeAndAddPath();
+			isTimeOutSet = true
+			fabricCanvas.freeDrawingBrush._finalizeAndAddPath()
 			const data = cropScaleGetImageData(
 				mainContext,
 				cropContext,
 				scaledContext,
-      );
-      const length = data.length;
-      // const sharedArray = new SharedArrayBuffer(length);
-      // console.log(data)
-			const output = model.inference(data);
+			)
+			// const length = data.length;
+			// const sharedArray = new SharedArrayBuffer(length);
+			// console.log(data)
+			const output = model.inference(data)
 			// @ts-ignore
-			chart.data.datasets[0].data = output;
-			chart.update();
-			isTimeOutSet = false;
-		}, 50);
-		isTimeOutSet = true;
+			chart.data.datasets[0].data = output
+			chart.update()
+			isTimeOutSet = false
+		}, 50)
+		isTimeOutSet = true
 	}
 
 	fabricCanvas.on("mouse:down", function () {
-		isDrawing = true;
-	});
+		isDrawing = true
+	})
 	fabricCanvas.on("mouse:up", function () {
-		isDrawing = false;
-		fireOffInference();
-	});
+		isDrawing = false
+		fireOffInference()
+	})
 
 	fabricCanvas.on("mouse:move", function () {
 		if (isDrawing && !isTimeOutSet) {
-			fireOffInference();
+			fireOffInference()
 		}
-	});
-});
-
-// add drawing canvas
-const fabricCanvas = new fabric.Canvas(mainCanvasEl, {
-	isDrawingMode: true,
-});
-const backgroundColor = "rgba(255, 255, 255, 255)"; // White with solid alpha
-fabricCanvas.freeDrawingBrush.width = 25;
-fabricCanvas.backgroundColor = backgroundColor;
+	})
+})
 
 // chart component
-const chartEl = document.getElementById("chart") as HTMLCanvasElement;
-const chart = chartConfigBuilder(chartEl);
+const chartEl = document.getElementById("chart") as HTMLCanvasElement
+const chart = chartConfigBuilder(chartEl)
 
 // clear button
-document.getElementById("clear")!.onclick = () => {
-	fabricCanvas.clear();
-	fabricCanvas.backgroundColor = backgroundColor;
-	fabricCanvas.renderAll();
-	mainContext.clearRect(0, 0, mainCanvasEl.width, mainCanvasEl.height);
-	scaledContext?.clearRect(0, 0, scaledCanvasEl.width, scaledCanvasEl.height);
+Object.assign(document.getElementById("clear")!, {
+	onclick() {
+		fabricCanvas.clear()
+		fabricCanvas.renderAll()
+		cropCanvas.clear()
 
-	chart.data.datasets[0].data = Array(10).fill(0);
-	chart.update();
-};
+		chart.data.datasets[0].data = Array(10).fill(0)
+		chart.update()
+	},
+})
