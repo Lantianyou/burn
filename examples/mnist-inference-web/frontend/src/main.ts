@@ -14,22 +14,16 @@ import { fabric } from "fabric"
 import { chartConfigBuilder } from "./chartConfigBuilder.js"
 import { cropScaleGetImageData } from "./cropScaleGetImageData.js"
 
-const mainCanvasEl = document.getElementById("main-canvas") as HTMLCanvasElement
 const cropEl = document.getElementById("crop-canvas") as HTMLCanvasElement
 const scaledCanvasEl = document.getElementById(
 	"scaled-canvas",
 ) as HTMLCanvasElement
-const mainContext = mainCanvasEl.getContext("2d", {
-	willReadFrequently: true,
-})!
 const cropContext = cropEl.getContext("2d", { willReadFrequently: true })!
 const scaledContext = scaledCanvasEl.getContext("2d", {
 	willReadFrequently: true,
 })!
 
 const cropCanvas = new fabric.Canvas("crop-canvas")
-const scaledCanvas = new fabric.Canvas("scaled-canvas")
-
 // add drawing canvas
 const fabricCanvas = new fabric.Canvas("main-canvas", {
 	isDrawingMode: true,
@@ -48,11 +42,12 @@ wasm().then(async () => {
 		clearTimeout(timeoutId)
 		timeoutId = setTimeout(() => {
 			isTimeOutSet = true
-			fabricCanvas.freeDrawingBrush._finalizeAndAddPath()
+			// fabricCanvas.freeDrawingBrush._finalizeAndAddPath()
 			const data = cropScaleGetImageData(
-				mainContext,
+				fabricCanvas,
 				cropContext,
 				scaledContext,
+				cropCanvas
 			)
 			// const length = data.length;
 			// const sharedArray = new SharedArrayBuffer(length);
@@ -91,6 +86,14 @@ Object.assign(document.getElementById("clear")!, {
 		fabricCanvas.clear()
 		fabricCanvas.renderAll()
 		cropCanvas.clear()
+
+		scaledContext.clearRect(
+			0,
+			0,
+			scaledContext.canvas.height,
+			scaledContext.canvas.width,
+		)
+
 
 		chart.data.datasets[0].data = Array(10).fill(0)
 		chart.update()

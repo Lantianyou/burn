@@ -1,3 +1,5 @@
+import { fabric } from "fabric"
+
 /**
  * Converts RGBA image data from canvas to grayscale (0 is white & 255 is black).
  */
@@ -58,17 +60,16 @@ const white = "rgba(255, 255, 255, 255)"
  * Auto crops the image, scales to 28x28 pixel image, and returns as grayscale image.
  */
 export function cropScaleGetImageData(
-	mainContext: CanvasRenderingContext2D,
+	mainContext: fabric.Canvas,
 	cropContext: CanvasRenderingContext2D,
 	scaledContext: CanvasRenderingContext2D,
+	cropCanvas: fabric.Canvas,
 ) {
-	const cropEl = cropContext.canvas
+	const cropEl = cropCanvas.getElement()
 
 	// Get the auto-cropped image data and put into the intermediate/hidden canvas
-	cropContext.fillStyle = "rgba(255, 255, 255, 255)" // white non-transparent color
-	cropContext.fillRect(0, 0, cropEl.width, cropEl.height)
-	cropContext.save()
-	const [w, h, croppedImage] = cropImageFromCanvas(mainContext)
+	cropCanvas.clear()
+	const [w, h, croppedImage] = cropImageFromCanvas(mainContext.getContext())
 	cropEl.width = Math.max(w, h) * 1.2
 	cropEl.height = Math.max(w, h) * 1.2
 	const leftPadding = (cropEl.width - w) / 2
@@ -83,11 +84,11 @@ export function cropScaleGetImageData(
 		scaledContext.canvas.height,
 		scaledContext.canvas.width,
 	)
-	scaledContext.fillStyle = "rgba(255, 255, 255, 255)" // white non-transparent color
+	scaledContext.fillStyle = white // white non-transparent color
 	scaledContext.fillRect(0, 0, cropEl.width, cropEl.height)
 	scaledContext.scale(
-		28 / cropContext.canvas.width,
-		28 / cropContext.canvas.height,
+		28 / cropEl.width,
+		28 / cropEl.height,
 	)
 	scaledContext.drawImage(cropEl, 0, 0)
 

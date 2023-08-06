@@ -37,7 +37,7 @@ export function chartConfigBuilder(chartEl: HTMLCanvasElement) {
 				datalabels: {
 					color: "white",
 					formatter: function (value) {
-						return Math.round((value * 100) / 100).toFixed(2)
+						return Number(value).toFixed(2)
 					},
 				},
 			},
