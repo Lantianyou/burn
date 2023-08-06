@@ -1,5 +1,5 @@
-import { Chart } from "chart.js/auto";
-import ChartDataLabels from "chartjs-plugin-datalabels";
+import { Chart } from "chart.js/auto"
+import ChartDataLabels from "chartjs-plugin-datalabels"
 
 /**
  * Helper function that builds a chart using Chart.js library.
@@ -8,7 +8,7 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
  */
 
 export function chartConfigBuilder(chartEl: HTMLCanvasElement) {
-	Chart.register(ChartDataLabels);
+	Chart.register(ChartDataLabels)
 	return new Chart(chartEl, {
 		plugins: [ChartDataLabels],
 		type: "bar",
@@ -37,7 +37,7 @@ export function chartConfigBuilder(chartEl: HTMLCanvasElement) {
 				datalabels: {
 					color: "white",
 					formatter: function (value) {
-						return Math.round((value * 100) / 100).toFixed(2);
+						return Math.round((value * 100) / 100).toFixed(2)
 					},
 				},
 			},
@@ -48,5 +48,5 @@ export function chartConfigBuilder(chartEl: HTMLCanvasElement) {
 				},
 			},
 		},
-	});
+	})
 }
