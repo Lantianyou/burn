@@ -50,8 +50,7 @@ wasm().then(async () => {
 			// const sharedArray = new SharedArrayBuffer(length);
 			// console.log(data)
 			const output = model.inference(data)
-			// @ts-ignore
-			chart.data.datasets[0].data = output
+			chart.data.datasets[0].data = Array.from(output)
 			chart.update()
 			isTimeOutSet = false
 		}, 50)

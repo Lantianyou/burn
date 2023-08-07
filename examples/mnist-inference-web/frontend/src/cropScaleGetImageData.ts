@@ -25,10 +25,10 @@ function rgba2gray(data: Uint8ClampedArray) {
  * src: https://stackoverflow.com/a/22267731
  */
 function cropImageFromCanvas(
-	ctx: CanvasRenderingContext2D,
+	canvas: HTMLCanvasElement,
 ): [number, number, ImageData] {
-	const canvas = ctx.canvas
 	const pix: { x: number[]; y: number[] } = { x: [], y: [] }
+	const ctx = canvas.getContext("2d")!
 	const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 
 	const height = canvas.height
@@ -56,6 +56,7 @@ function cropImageFromCanvas(
 }
 
 const white = "rgba(255, 255, 255, 255)"
+
 /**
  * Auto crops the image, scales to 28x28 pixel image, and returns as grayscale image.
  */
@@ -68,7 +69,7 @@ export function cropScaleGetImageData(
 
 	// Get the auto-cropped image data and put into the intermediate/hidden canvas
 	cropCanvas.clear()
-	const [w, h, croppedImage] = cropImageFromCanvas(mainContext.getContext())
+	const [w, h, croppedImage] = cropImageFromCanvas(mainContext.getElement())
 	cropEl.width = Math.max(w, h) * 1.2
 	cropEl.height = Math.max(w, h) * 1.2
 	const leftPadding = (cropEl.width - w) / 2
