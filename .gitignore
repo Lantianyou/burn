@@ -7,3 +7,4 @@ Cargo.lock
 
 .idea
 .vscode
+examples/mnist-inference-web/src/canvas.rs

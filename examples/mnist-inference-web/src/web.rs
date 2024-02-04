@@ -7,7 +7,7 @@ use crate::state::{build_and_load_model, Backend};
 
 use burn::tensor::Tensor;
 
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::{prelude::*, Clamped};
 
 /// Mnist structure that corresponds to JavaScript class.
 /// See:[exporting-rust-struct](https://rustwasm.github.io/wasm-bindgen/contributing/design/exporting-rust-struct.html)
@@ -122,4 +122,21 @@ mod tests {
 
         assert!(output[7] > 0.9);
     }
+}
+
+fn rbga_to_grayscale(data: Clamped<Vec<u8>>) -> Vec<u8> {
+    data.iter()
+        .enumerate()
+        .map(|(i, pixel)| {
+            if i % 4 == 3 {
+                return 255;
+            }
+            let r = data[i] as f32;
+            let g = data[i + 1] as f32;
+            let b = data[i + 2] as f32;
+            let a = data[i + 3] as f32;
+            let grey = (r * 0.3 + g * 0.59 + b * 0.11) * (a / 255.0);
+            grey as u8
+        })
+        .collect::<Vec<u8>>()
 }
